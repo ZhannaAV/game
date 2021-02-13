@@ -1,0 +1,56 @@
+.page{
+display: flex;
+}
+
+.page__content{
+	width: 400px;
+	margin: auto;
+	position: relative;
+}
+
+.canvas{
+	background-color: tomato;
+
+}
+.start{
+	position: absolute;
+	background-color: teal;
+	border: none;
+	font-size: 27px;
+	color: tomato;
+	width: 200px;
+	height: 80px;
+	top: 250px;
+	left: 100px;
+	transition: color .3s;
+}
+
+.start_after-game{
+	display: block;
+}
+
+.start:hover, .start:active{
+	color: turquoise;
+}
+
+.table{
+	position: absolute;
+	min-width: 60px;
+	height: 20px;
+	background-color: pink;
+	color: teal;
+	top: 0;
+}
+
+.table_position_right{
+	right: 0;
+}
+
+.table_position_center{
+	width: 200px;
+	height: 80px;
+	top: 250px;
+	left: 100px;
+	text-align: center;
+	display: none;
+}
