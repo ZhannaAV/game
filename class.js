@@ -4,7 +4,7 @@ class BollModel {
         this.height = display_height;
         this.y = this.height;
         this.x = Math.random() * (this.width - r * 2) + r;
-        this.r = Math.random() * r / 2 + r / 2;
+        this.r = Math.random() * r / 3 + r / 3 * 2;
         this.color = color[Math.floor(Math.random() * color.length)];
         this.dy = Math.random() * 3 * dy / 4 + dy / 4;
         this.dx = 0;
