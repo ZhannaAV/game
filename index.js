@@ -1,6 +1,6 @@
 const color = ['mediumspringgreen', "dodgerblue", 'aqua', 'seagreen', 'greenyellow', 'yellow', 'darkturquoise', 'teal', 'cyan']
 const radius = 30;
-const rate = 5;
+let rate = 5;
 let time = 60;
 let scoreWin = 0;
 let scoreLose = 0;
@@ -15,10 +15,6 @@ const startBtn = document.querySelector('.start');
 const playScore = document.querySelector('.score');
 const timeScore = document.querySelector('.time');
 const gameOver = document.querySelector('.table_position_center')
-let generateBollsInterval
-let checkBoomInterval
-let windInterval
-
 
 let needle = new Needle(canvasWidth, 4, 35)
 
@@ -32,39 +28,36 @@ function needleMove(evt) {
     if (evt.key === 'ArrowRight') return needle.moveRight()
 }
 
-// Если ускорять под конец, тогда нужно для генерации шаров и для рендера рекурсивно вызывать setTimeout (как
-// сделано со временем) и уменьшать delay в каждой итерации.
-
 //запускает игру при нажатии кнопки старт
 startBtn.addEventListener('click', () => {
     startBtn.style.display = 'none';
     renewScore();
     document.addEventListener('keydown', needleMove);
-    generateBollsInterval = setInterval(generateBolls, 2000);
-    checkBoomInterval = setInterval(checkBoom , 40);
-    windInterval = setInterval(windArrow, 2000);
-    let renderInterval =  setInterval(render, 40);
+    let generateBollsInterval = setInterval(generateBolls, 2000);
+    let checkBoomInterval = setInterval(checkBoom, 40);
+    let windInterval = setInterval(windArrow, 2000);
+    let renderInterval = setInterval(render, 40);
 
     //счетчик обратного отсчета времени
     let timerId = setTimeout(function renewTime() {
         time--;
         timeScore.textContent = `${time}`;
         if (time > 0) {
+            if (time === 24 || time === 18 || time === 12 || time === 6) rate++;//ускоряет скорость шаров
             timerId = setTimeout(renewTime, 1000);
         } else {
-            clearInterval(renderInterval)
-            stop(generateBollsInterval, checkBoomInterval, windInterval)
+            stop(generateBollsInterval, checkBoomInterval, windInterval, renderInterval)
         }
     }, 1000)
 })
 
 //останавливает игру по истечении time
-function stop() {
+function stop(generateBollsInterval, checkBoomInterval, windInterval, renderInterval) {
     document.removeEventListener('keydown', needleMove);
     clearInterval(generateBollsInterval);
     clearInterval(checkBoomInterval);
     clearInterval(windInterval);
-    let renderInterval = setInterval(render, 4);
+    renderInterval = setInterval(render, 4);
     setTimeout(() => {
         clearInterval(renderInterval)
     }, 4000)
@@ -73,12 +66,12 @@ function stop() {
 }
 
 //генерация шаров
-function generateBolls () {
+function generateBolls() {
     bolls.push(new BollModel(canvasWidth, canvasHeight, radius, rate))
 }
 
 //проверка проколот или пропущен шар
-function checkBoom () {
+function checkBoom() {
     bolls.forEach((boll, index, array) => {
         if (isBoom(boll, needle)) {
             array[index] = new BollModel(canvasWidth, canvasHeight, radius, rate);
@@ -99,11 +92,11 @@ function isBoom(boll, needle) {
 
 //проверка, что шарик прошел мимо иглы
 function isPass(boll) {
-    return boll.y < -2 && boll.y > -6
+    return boll.y <= 0 && boll.y > (-rate)
 }
 
 //массив скоростей ветра
-function windArrow () {
+function windArrow() {
     let v = Math.random() * 2;
     const symbol = Math.random() * 2;
     if (symbol < 1) {
